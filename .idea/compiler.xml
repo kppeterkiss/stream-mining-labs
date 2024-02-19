@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="clustering" target="1.8" />
+      <module name="hashing_and_bloom" target="1.8" />
+      <module name="moaclassifier" target="1.8" />
+      <module name="stream_mining" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
