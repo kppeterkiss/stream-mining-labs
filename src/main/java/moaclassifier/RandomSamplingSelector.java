@@ -1,5 +1,10 @@
 package moaclassifier;
 
+
+public class RandomSamplingSelector{}
+/*
+Deprecated code, keeping just in case...
+
 import com.yahoo.labs.samoa.instances.Instance;
 import moa.core.Example;
 import org.apache.flink.streaming.api.collector.selector.OutputSelector;
@@ -30,3 +35,4 @@ public class RandomSamplingSelector implements OutputSelector<Example<Instance>>
         return TEST_LIST;
     }
 }
+*/

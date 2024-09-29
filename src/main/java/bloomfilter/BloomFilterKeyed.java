@@ -53,21 +53,21 @@ public class BloomFilterKeyed extends KeyedProcessFunction<Long, String, String>
             out.collect(value);
     }*/
 
-    @Override
-    public void processElement(String value, Context ctx, Collector<String> out) throws Exception {
-        SetOfHashes hashes = this.hashFunctions.value();
-        BitMap bf = this.bm.value();
-        boolean free = false;
-        List<Integer> values = new ArrayList<>();
-        for(SimpleHashFunction f : hashes.hashes)
-            values.add(f.getHash(value));
-        for (int v : values) {
-            free |= !bf.get(v);
-            bf.set(v);
-        }
-        if(free)
-            out.collect(value);
-        this.bm.update(bf);
+        @Override
+        public void processElement(String value, Context ctx, Collector<String> out) throws Exception {
+            SetOfHashes hashes = this.hashFunctions.value();
+            BitMap bf = this.bm.value();
+            boolean free = false;
+            List<Integer> values = new ArrayList<>();
+            for(SimpleHashFunction f : hashes.hashes)
+                values.add(f.getHash(value));
+            for (int v : values) {
+                free |= !bf.get(v);
+                bf.set(v);
+            }
+            if(free)
+                out.collect(value);
+            this.bm.update(bf);
 
-    }
+        }
 }

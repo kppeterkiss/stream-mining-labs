@@ -17,9 +17,9 @@ public class BloomFilterProgram {
 
         
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        DataStream<String> inputstream = env.readTextFile("src/main/resources/inputEmails");
-        //nc -lk 9999
-        //DataStream<String> inputstream =  env.socketTextStream("localhost", 9999);
+            //DataStream<String> inputstream = env.readTextFile("src/main/resources/inputEmails");
+        //ncat -lk 9999
+        DataStream<String> inputstream =  env.socketTextStream("localhost", 9999);
         //DataStream<String> filtered = inputstream.flatMap(new BloomFilter2(3,10));
 
 
@@ -31,15 +31,16 @@ public class BloomFilterProgram {
         });
         DataStream< String> filtered = keyed.process(new BloomFilterKeyed());
 
-        //nc -lk 5060
-        /*filtered.writeToSocket("localhost", 5060,
+        //ncat -lk 5060
+        filtered.writeToSocket("localhost", 5060,
                 new SerializationSchema<String>() {
                     @Override
                     public byte[] serialize(String element) {
                         return (element). getBytes ();
                     }
-                });*/
-        filtered.print();
+                });
+        // simplest sink: print
+        //filtered.print();
         /*filtered.addSink(new SinkFunction<String>() {
             @Override
             public void invoke(String value) throws Exception {

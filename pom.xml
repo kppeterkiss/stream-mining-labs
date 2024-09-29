@@ -22,23 +22,19 @@ under the License.
 
 	<groupId>stream_mining</groupId>
 	<artifactId>stream_mining</artifactId>
-	<version>0.1</version>
-    <modules>
-	</modules>
-    <packaging>pom</packaging>
-
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
 	<name>Flink Walkthrough DataStream Java</name>
 	<url>https://flink.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<flink.version>1.11.2</flink.version>
-		<java.version>1.8</java.version>
-		<scala.binary.version>2.11</scala.binary.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<log4j.version>2.12.1</log4j.version>
+		<flink.version>1.18.1</flink.version>
+		<target.java.version>1.8</target.java.version>
+		<maven.compiler.source>${target.java.version}</maven.compiler.source>
+		<maven.compiler.target>${target.java.version}</maven.compiler.target>
+		<log4j.version>2.17.1</log4j.version>
 	</properties>
 
 	<repositories>
@@ -58,37 +54,32 @@ under the License.
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-walkthrough-common_${scala.binary.version}</artifactId>
+			<artifactId>flink-walkthrough-common</artifactId>
 			<version>${flink.version}</version>
 		</dependency>
 
 		<!-- This dependency is provided, because it should not be packaged into the JAR file. -->
 		<dependency>
 			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-streaming-java_${scala.binary.version}</artifactId>
+			<artifactId>flink-streaming-java</artifactId>
 			<version>${flink.version}</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.flink</groupId>
-			<artifactId>flink-clients_${scala.binary.version}</artifactId>
+			<artifactId>flink-clients</artifactId>
 			<version>${flink.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.moa/moa -->
-		<dependency>
-			<groupId>nz.ac.waikato.cms.moa</groupId>
-			<artifactId>moa</artifactId>
-			<version>2020.07.1</version>
-		</dependency>
 
 		<!-- Add connector dependencies here. They must be in the default scope (compile). -->
+
 		<!-- Example:
 
 		<dependency>
 		    <groupId>org.apache.flink</groupId>
-		    <artifactId>flink-connector-kafka-0.10_${scala.binary.version}</artifactId>
-		    <version>${flink.version}</version>
+		    <artifactId>flink-connector-kafka</artifactId>
+		    <version>3.0.0-1.17</version>
 		</dependency>
 		-->
 
@@ -112,8 +103,12 @@ under the License.
 			<version>${log4j.version}</version>
 			<scope>runtime</scope>
 		</dependency>
-
-
+		<!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.moa/moa -->
+		<dependency>
+			<groupId>nz.ac.waikato.cms.moa</groupId>
+			<artifactId>moa</artifactId>
+			<version>2024.07.0</version>
+		</dependency>
 
 	</dependencies>
 
@@ -126,8 +121,8 @@ under the License.
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
+					<source>${target.java.version}</source>
+					<target>${target.java.version}</target>
 				</configuration>
 			</plugin>
 
@@ -147,7 +142,7 @@ under the License.
 						<configuration>
 							<artifactSet>
 								<excludes>
-									<exclude>org.apache.flink:force-shading</exclude>
+									<exclude>org.apache.flink:flink-shaded-force-shading</exclude>
 									<exclude>com.google.code.findbugs:jsr305</exclude>
 									<exclude>org.slf4j:*</exclude>
 									<exclude>org.apache.logging.log4j:*</exclude>
@@ -167,12 +162,25 @@ under the License.
 							</filters>
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>spendreport.FraudDetectionJob</mainClass>
+									<mainClass>org.example.FraudDetectionJob</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>
+						--add-opens java.base/java.lang=ALL-UNNAMED
+						--add-opens java.base/java.io=ALL-UNNAMED
+						--add-opens java.base/java.util=ALL-UNNAMED
+						--add-opens java.base/java.base=ALL-UNNAMED
+					</argLine>
+					<skipTests>${skip.unit.tests}</skipTests>
+				</configuration>
 			</plugin>
 		</plugins>
 
